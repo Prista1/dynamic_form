@@ -13,15 +13,16 @@ module ActiveModel
     def full_messages
       full_messages = []
 
-      each do |attribute, messages|
-        messages = Array.wrap(messages)
+      each do |error|
+
+        messages = Array.wrap(error.message)
         next if messages.empty?
 
-        if attribute == :base
+        if error.attribute == :base
           messages.each {|m| full_messages << m }
         else
-          attr_name = attribute.to_s.gsub('.', '_').humanize
-          attr_name = @base.class.human_attribute_name(attribute, :default => attr_name)
+          attr_name = error.attribute.to_s.gsub('.', '_').humanize
+          attr_name = @base.class.human_attribute_name(error.attribute, :default => attr_name)
           options = { :default => "%{attribute} %{message}", :attribute => attr_name }
 
           messages.each do |m|
